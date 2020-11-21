@@ -1,11 +1,11 @@
 #include "geometry.h"
-#include <algorithm>
-#include <functional>
-#include <iostream>
-#include <limits>
 #include <type_traits>
-#include <utility>
 #include <vector>
+#include <algorithm>
+#include <utility>
+#include <functional>
+#include <limits>
+#include <iostream>
 
 #ifdef NDEBUG
 #undef NDEBUG
@@ -21,9 +21,8 @@ int main() {
     // UWAGA! Move construction/assignment w zasadzie wymagane jest
     // glownie przy Rectangles, ale najlepiej jak wszystkie klasy beda je miec.
 
-    // Jesli nie zadeklaruje sie copy constructor/copy assignment/move constructor/move
-    // assignment/destructor to kompilator sam je wygeneruje w dobrych wersjach (bo w tym zadaniu
-    // wszystkie zasoby sa enkapsulowane STLem),
+    // Jesli nie zadeklaruje sie copy constructor/copy assignment/move constructor/move assignment/destructor
+    // to kompilator sam je wygeneruje w dobrych wersjach (bo w tym zadaniu wszystkie zasoby sa enkapsulowane STLem),
 
     // Default konstruktory
     assert(!std::is_default_constructible_v<Position>);
@@ -134,7 +133,7 @@ int main() {
     // Istnienie Vector::~Vector().
     vec23.~Vector();
 
-    // POSITION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// POSITION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     // Dzialanie konstuktora Position(scalar, scalar).
     Position pos3{-300, -400};
@@ -199,8 +198,7 @@ int main() {
     Position pos18(pos17);
 
     // Istnienie Position::operator=(const Position &)
-    Position pos19 =
-        pos18; // Side note: ta linijka to nie operator= tylko wywolanie konstruktora.
+    Position pos19 = pos18; // Side note: ta linijka to nie operator= tylko wywolanie konstruktora.
     pos19 = pos17;
 
     // UWAGA! Dalsze dwa sa raczej opcjonalne
@@ -280,7 +278,7 @@ int main() {
     Position pos33{-215, 341};
     assert(pos33.reflection() == Position(341, -215));
 
-    // ------------------- RECTANGLE -------------------
+// ------------------- RECTANGLE -------------------
 
     // UWAGA: Zakladam reprezentacje
     // scalar width, scalar height, Position pos
@@ -329,14 +327,13 @@ int main() {
 
     assert(Rectangle(45, 37, {1, 2}).reflection() == Rectangle(37, 45, {2, 1}));
     assert(Rectangle(45, 37, {-1, -2}).reflection() == Rectangle(37, 45, {-2, -1}));
-    assert(Rectangle(4519, 37431, {-314, -1938}).reflection() ==
-           Rectangle(37431, 4519, {-1938, -314}));
+    assert(Rectangle(4519, 37431, {-314, -1938}).reflection() == Rectangle(37431, 4519, {-1938, -314}));
 
     Rectangle rec12{5, 6, {-2, -1}};
     rec12 += {2, 1};
     assert(rec12 == Rectangle(5, 6));
 
-    // ------------------- RECTANGLES -------------------
+// ------------------- RECTANGLES -------------------
 
     // Ma istniec konstruktor domyslny
     Rectangles recs1;
@@ -384,7 +381,7 @@ int main() {
     Rectangles recs10{rec101};
     recs10 = std::move(recs9);
 
-    // ------------ VARIOUS ---------------
+// ------------ VARIOUS ---------------
 
     // Dodawanie
     Position p{3, 5};
@@ -393,10 +390,12 @@ int main() {
     Rectangle r{9, 7, {-61, -13}};
     const Rectangle cr{15, 12, {17, -21}};
 
-    Rectangles rs{Rectangle(8, 1, {-4, 8}), Rectangle(71, 23, {5, 6}),
+    Rectangles rs{Rectangle(8, 1, {-4, 8}),
+                  Rectangle(71, 23, {5, 6}),
                   Rectangle(9, 15, {43, 12})};
 
-    const Rectangles crs{Rectangle(8, 1, {-4, 8}), Rectangle(71, 23, {5, 6}),
+    const Rectangles crs{Rectangle(8, 1, {-4, 8}),
+                         Rectangle(71, 23, {5, 6}),
                          Rectangle(9, 15, {43, 12})};
 
     Vector v{-21, 34};
@@ -441,7 +440,7 @@ int main() {
     std::move(tm3) + v;
     v + std::move(tm4);
 
-    // ------------- MERGE -------------
+// ------------- MERGE -------------
 
     const Rectangle mr1{4, 5, {3, 7}};
     const Rectangle mr2{4, 1, {3, 12}};
@@ -460,41 +459,37 @@ int main() {
 
     const Rectangle mr8{1, 5, {5, 1}};
 
-    Rectangle ret_all_1 =
-        merge_all({Rectangle(2, 1), Rectangle(2, 1, {0, 1}), Rectangle(2, 2, {2, 0}),
-                   Rectangle(4, 2, {0, 2}), Rectangle(2, 4, {4, 0}), Rectangle(6, 1, {0, 4})});
-
-    assert(ret_all_1 == Rectangle(6, 5));
-
-    /* DNR: Rectangle ret_all_2 = merge_all({Rectangle(2, 1),
+    Rectangle ret_all_1 = merge_all({Rectangle(2, 1),
                                      Rectangle(2, 1, {0, 1}),
                                      Rectangle(2, 2, {2, 0}),
                                      Rectangle(4, 2, {0, 2}),
-                                     Rectangle(2, 4, {3, 0}),
-                                     Rectangle(6, 1, {0, 4})}); */
+                                     Rectangle(2, 4, {4, 0}),
+                                     Rectangle(6, 1, {0, 4})});
+
+    const Rectangle mr9{3, 4, {-105, -213}};
+
+    const Rectangle mr10{3, 2, {-105, -209}};
+    assert(merge_horizontally(mr9, mr10) == Rectangle(3, 6, {-105, -213}));
+
+    const Rectangle mr11(2, 4, {-102, -213});
+    assert(merge_vertically(mr9, mr11) == Rectangle(5, 4, {-105, -213}));
+
+    assert(ret_all_1 == Rectangle(6, 5));
 
     // Czy typ zwracany przez origin() zawiera consta.
     assert(std::is_const_v<std::remove_reference_t<decltype(Position::origin())>>);
 
     // Position& Position::operator+=(const Vector&)
-    assert((std::is_same_v<
-            std::invoke_result_t<decltype(&Position::operator+=), Position, const Vector &>,
-            Position &>));
+    assert((std::is_same_v<std::invoke_result_t<decltype(&Position::operator+=), Position, const Vector &>, Position &>));
 
     // Vector& Vector::operator+=(const Vector&)
-    assert((std::is_same_v<
-            std::invoke_result_t<decltype(&Vector::operator+=), Vector, const Vector &>,
-            Vector &>));
+    assert((std::is_same_v<std::invoke_result_t<decltype(&Vector::operator+=), Vector, const Vector &>, Vector &>));
 
     // Rectangle& Rectangle::operator+=(const Vector&)
-    assert((std::is_same_v<
-            std::invoke_result_t<decltype(&Rectangle::operator+=), Rectangle, const Vector &>,
-            Rectangle &>));
+    assert((std::is_same_v<std::invoke_result_t<decltype(&Rectangle::operator+=), Rectangle, const Vector &>, Rectangle &>));
 
     // Rectangles& Rectangles::operator+=(const Vector&)
-    assert((std::is_same_v<
-            std::invoke_result_t<decltype(&Rectangles::operator+=), Rectangles, const Vector &>,
-            Rectangles &>));
+    assert((std::is_same_v<std::invoke_result_t<decltype(&Rectangles::operator+=), Rectangles, const Vector &>, Rectangles &>));
 
     // DNC: pos27 = vec26;
     // DNC: vec26 = pos27;
@@ -503,6 +498,8 @@ int main() {
     // DNC: recs4[0] = rec102;
     // DNC: Rectangle &recRef1 = recs4[0];
 
+    // DNR: recs3[3];
+    // DNR: recs4[3];
     // DNR: Rectangle rec3{0, 0};
     // DNR: Rectangle rec4{3, 0};
     // DNR: Rectangle rec5{0, 5};
@@ -513,6 +510,13 @@ int main() {
     // DNR: merge_horizontally(mr1, mr4);
     // DNR: merge_vertically(mr5, mr7);
     // DNR: merge_vertically(mr5, mr7);
+
+    /* DNR: Rectangle ret_all_2 = merge_all({Rectangle(2, 1),
+                                     Rectangle(2, 1, {0, 1}),
+                                     Rectangle(2, 2, {2, 0}),
+                                     Rectangle(4, 2, {0, 2}),
+                                     Rectangle(2, 4, {3, 0}),
+                                     Rectangle(6, 1, {0, 4})}); */
 
     std::cout << "All tests passed!" << std::endl;
 }
