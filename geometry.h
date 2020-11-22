@@ -76,18 +76,15 @@ class Rectangles {
     Rectangles() : rectangles_() {}
     Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
 
-    Rectangle &operator[](size_type n) {return rectangles_[n];}
-    const Rectangle &operator[](size_type n) const {return rectangles_[n];}
+    Rectangle &operator[](size_type n);
+    const Rectangle &operator[](size_type n) const;
 
     size_type size() const {return rectangles_.size();}
 
     bool operator==(const Rectangles&) const;
     Rectangles &operator+=(const Vector&);
 
-    friend Rectangles operator+(const Rectangles&, const Vector&);
-    friend Rectangles operator+(const Vector&, const Rectangles&);
     friend Rectangles operator+(Rectangles&&, const Vector&);
-    friend Rectangles operator+(const Vector&, Rectangles&&);
 };
 
 Position operator+(const Position &, const Vector &);
@@ -101,10 +98,9 @@ Rectangles operator+(const Vector&, const Rectangles&);
 Rectangles operator+(Rectangles&&, const Vector&);
 Rectangles operator+(const Vector&, Rectangles&&);
 
-/*
-Rectangle merge_horizontally(const Rectangle&, const Rectangle&)
+// TODO sps unnecessary to do rvalue reference stuff
+Rectangle merge_horizontally(const Rectangle&, const Rectangle&);
 Rectangle merge_vertically(const Rectangle&, const Rectangle&);
 Rectangle merge_all(const Rectangles&);
-*/
 
 #endif // GEOMETRY_GEOMETRY_H

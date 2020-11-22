@@ -2,6 +2,40 @@
 
 #define m_assert(expr, msg) assert(((void)(msg), (expr)))
 
+namespace {
+    class Line_segment {
+        const Position p1_;
+        const Position p2_;
+      public:
+        Line_segment(const Position &p1, const Position &p2) : p1_(p1), p2_(p2) {}
+        const Position &p1() const {return p1_;}
+        const Position &p2() const {return p2_;}
+        bool operator==(const Line_segment&) const;
+    };
+
+    bool Line_segment::operator==(const Line_segment &l) const {
+        return p1_ == l.p1() && p2_ == l.p2();
+    }
+
+    bool horizontal_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
+        auto p1 = rect1.pos(), p2 = rect2.pos();
+        Position l1 = p1 + Vector(rect1.height(), 0),
+                 r1 = p1 + Vector(rect1.height(), rect1.width()),
+                 l2 = p2,
+                 r2 = p2 + Vector(0, rect2.width());
+        return Line_segment(l1, r1) == Line_segment(l2, r2);
+    }
+
+    bool vertical_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
+        auto p1 = rect1.pos(), p2 = rect2.pos();
+        Position l1 = p1 + Vector(0, rect1.width()),
+                 r1 = p1 + Vector(rect1.height(), rect1.width()),
+                 l2 = p2,
+                 r2 = p2 + Vector(rect2.height(), 0);
+        return Line_segment(l1, r1) == Line_segment(l2, r2);
+    }
+}
+
 Vector::Vector(const Position &p) : XYObject{p.x(), p.y()} {
 }
 
@@ -119,6 +153,11 @@ Rectangle operator+(const Vector &v, const Rectangle &r) {
 }
 
 // RECTANGLES
+Rectangle &Rectangles::operator[](size_type n) {
+    m_assert(n < rectangles_.size(), "Trying to access an element out of bounds.");
+    return rectangles_[n];
+}
+
 bool Rectangles::operator==(const Rectangles &rects) const {
     if (rects.size() != this->size())
         return false;
@@ -152,4 +191,31 @@ Rectangles operator+(Rectangles &&rects, const Vector &v) {
 
 Rectangles operator+(const Vector &v, Rectangles &&rects) {
     return std::forward<Rectangles>(rects) + v;
+}
+
+Rectangle merge_horizontally(const Rectangle &r1, const Rectangle &r2) {
+    m_assert(horizontal_merge_possible(r1, r2), "Horizontal merge is impossible");
+    return Rectangle(r1.height() + r2.height(), r1.width(), r1.pos());
+}
+
+Rectangle merge_vertically(const Rectangle &r1, const Rectangle &r2) {
+    m_assert(horizontal_merge_possible(r1, r2), "Vertical merge is impossible");
+    return Rectangle(r1.height(), r1.width() + r2.width(), r1.pos());
+}
+
+Rectangle merge_all(const Rectangles &rects) {
+    // czy to wlasciwa reakcja?
+    m_assert(rects.size() > 0, "Merge failed, empty collection cannot be merged");
+    Rectangle ans = rects[0];
+    bool merge_successful = true;
+    for (size_type i = 1; i < rects.size() && merge_successful; ++i) {
+        if (horizontal_merge_possible(ans, rects[i]))
+            ans = merge_horizontally(ans, rects[i]);
+        else if (vertical_merge_possible(ans, rects[i]))
+            ans = merge_vertically(ans, rects[i]);
+        else
+            merge_successful = false;
+    }
+    m_assert(merge_successful, "Merge failed, certain rectangles cannot be merged");
+    return ans;
 }
