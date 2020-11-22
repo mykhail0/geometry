@@ -140,7 +140,7 @@ Rectangle &Rectangles::operator[](size_type n) {
     return rectangles_[n];
 }
 
-size_type Rectangles::size() {
+size_type Rectangles::size() const {
     return rectangles_.size();
 }
 
@@ -153,7 +153,7 @@ bool Rectangles::operator==(const Rectangles &rects) const {
     if (rects.size() != this->size())
         return false;
     for (size_type i = 0; i < this->size(); ++i) {
-        if ((*this)[i] != rects[i])
+        if (!((*this)[i] == rects[i]))
             return false;
     }
     return true;
