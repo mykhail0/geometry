@@ -19,19 +19,19 @@ namespace {
 
     bool horizontal_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
         auto p1 = rect1.pos(), p2 = rect2.pos();
-        Position l1 = p1 + Vector(rect1.height(), 0),
-                 r1 = p1 + Vector(rect1.height(), rect1.width()),
+        Position l1 = p1 + Vector(0, rect1.height()),
+                 r1 = p1 + Vector(rect1.width(), rect1.height()),
                  l2 = p2,
-                 r2 = p2 + Vector(0, rect2.width());
+                 r2 = p2 + Vector(rect2.width(), 0);
         return Line_segment(l1, r1) == Line_segment(l2, r2);
     }
 
     bool vertical_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
         auto p1 = rect1.pos(), p2 = rect2.pos();
-        Position l1 = p1 + Vector(0, rect1.width()),
-                 r1 = p1 + Vector(rect1.height(), rect1.width()),
+        Position l1 = p1 + Vector(rect1.width(), 0),
+                 r1 = p1 + Vector(rect1.width(), rect1.height()),
                  l2 = p2,
-                 r2 = p2 + Vector(rect2.height(), 0);
+                 r2 = p2 + Vector(0, rect2.height());
         return Line_segment(l1, r1) == Line_segment(l2, r2);
     }
 }
@@ -158,6 +158,11 @@ Rectangle &Rectangles::operator[](size_type n) {
     return rectangles_[n];
 }
 
+const Rectangle &Rectangles::operator[](size_type n) const {
+    m_assert(n < rectangles_.size(), "Trying to access an element out of bounds.");
+    return rectangles_[n];
+}
+
 bool Rectangles::operator==(const Rectangles &rects) const {
     if (rects.size() != this->size())
         return false;
@@ -195,12 +200,12 @@ Rectangles operator+(const Vector &v, Rectangles &&rects) {
 
 Rectangle merge_horizontally(const Rectangle &r1, const Rectangle &r2) {
     m_assert(horizontal_merge_possible(r1, r2), "Horizontal merge is impossible");
-    return Rectangle(r1.height() + r2.height(), r1.width(), r1.pos());
+    return Rectangle(r1.width(), r1.height() + r2.height(), r1.pos());
 }
 
 Rectangle merge_vertically(const Rectangle &r1, const Rectangle &r2) {
-    m_assert(horizontal_merge_possible(r1, r2), "Vertical merge is impossible");
-    return Rectangle(r1.height(), r1.width() + r2.width(), r1.pos());
+    m_assert(vertical_merge_possible(r1, r2), "Vertical merge is impossible");
+    return Rectangle(r1.width() + r2.width(), r1.height(), r1.pos());
 }
 
 Rectangle merge_all(const Rectangles &rects) {
