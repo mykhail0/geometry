@@ -1,0 +1,5 @@
+#! /usr/bin/bash
+
+g++ -c -Wall -Wextra -O2 -std=c++17 geometry.cc -o geometry.o
+g++ -c -Wall -Wextra -O2 -std=c++17 main.cpp -o main.o
+g++ geometry.o main.o -o app
