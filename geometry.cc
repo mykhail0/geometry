@@ -3,27 +3,13 @@
 #define m_assert(expr, msg) assert(((void)(msg), (expr)))
 
 namespace {
-    class Line_segment {
-        const Position p1_;
-        const Position p2_;
-      public:
-        Line_segment(const Position &p1, const Position &p2) : p1_(p1), p2_(p2) {}
-        const Position &p1() const {return p1_;}
-        const Position &p2() const {return p2_;}
-        bool operator==(const Line_segment&) const;
-    };
-
-    bool Line_segment::operator==(const Line_segment &l) const {
-        return p1_ == l.p1() && p2_ == l.p2();
-    }
-
     bool horizontal_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
         auto p1 = rect1.pos(), p2 = rect2.pos();
         Position l1 = p1 + Vector(0, rect1.height()),
                  r1 = p1 + Vector(rect1.width(), rect1.height()),
                  l2 = p2,
                  r2 = p2 + Vector(rect2.width(), 0);
-        return Line_segment(l1, r1) == Line_segment(l2, r2);
+        return l1 == l2 && r1 == r2;
     }
 
     bool vertical_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
@@ -32,7 +18,7 @@ namespace {
                  r1 = p1 + Vector(rect1.width(), rect1.height()),
                  l2 = p2,
                  r2 = p2 + Vector(0, rect2.height());
-        return Line_segment(l1, r1) == Line_segment(l2, r2);
+        return l1 == l2 && r1 == r2;
     }
 }
 
