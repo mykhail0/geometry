@@ -4,21 +4,13 @@
 
 namespace {
     bool horizontal_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
-        auto p1 = rect1.pos(), p2 = rect2.pos();
-        Position l1 = p1 + Vector(0, rect1.height()),
-                 r1 = p1 + Vector(rect1.width(), rect1.height()),
-                 l2 = p2,
-                 r2 = p2 + Vector(rect2.width(), 0);
-        return l1 == l2 && r1 == r2;
+        return rect1.width() == rect2.width() &&
+               rect1.pos() + Vector(0, rect1.height()) == rect2.pos();
     }
 
     bool vertical_merge_possible(const Rectangle &rect1, const Rectangle &rect2) {
-        auto p1 = rect1.pos(), p2 = rect2.pos();
-        Position l1 = p1 + Vector(rect1.width(), 0),
-                 r1 = p1 + Vector(rect1.width(), rect1.height()),
-                 l2 = p2,
-                 r2 = p2 + Vector(0, rect2.height());
-        return l1 == l2 && r1 == r2;
+        return rect1.height() == rect2.height() &&
+               rect1.pos() + Vector(rect1.width(), 0) == rect2.pos();
     }
 }
 
@@ -139,9 +131,17 @@ Rectangle operator+(const Vector &v, const Rectangle &r) {
 }
 
 // RECTANGLES
+Rectangles::Rectangles() : rectangles_() {}
+
+Rectangles::Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+
 Rectangle &Rectangles::operator[](size_type n) {
     m_assert(n < rectangles_.size(), "Trying to access an element out of bounds.");
     return rectangles_[n];
+}
+
+size_type Rectangles::size() {
+    return rectangles_.size();
 }
 
 const Rectangle &Rectangles::operator[](size_type n) const {
@@ -152,9 +152,11 @@ const Rectangle &Rectangles::operator[](size_type n) const {
 bool Rectangles::operator==(const Rectangles &rects) const {
     if (rects.size() != this->size())
         return false;
-    size_type i1, i2;
-    for (i1 = i2 = 0; i1 < this->size() && (*this)[i1] == rects[i2]; ++i1, ++i2) {}
-    return i1 == this->size();
+    for (size_type i = 0; i < this->size(); ++i) {
+        if ((*this)[i] != rects[i])
+            return false;
+    }
+    return true;
 }
 
 Rectangles &Rectangles::operator+=(const Vector &v) {
@@ -175,9 +177,7 @@ Rectangles operator+(const Vector &v, const Rectangles &rects) {
 }
 
 Rectangles operator+(Rectangles &&rects, const Vector &v) {
-    for (Rectangle &r : rects.rectangles_)
-        r += v;
-    return std::move(rects);
+    return std::move(rects += v);
 }
 
 Rectangles operator+(const Vector &v, Rectangles &&rects) {
@@ -195,18 +195,15 @@ Rectangle merge_vertically(const Rectangle &r1, const Rectangle &r2) {
 }
 
 Rectangle merge_all(const Rectangles &rects) {
-    // czy to wlasciwa reakcja?
     m_assert(rects.size() > 0, "Merge failed, empty collection cannot be merged");
     Rectangle ans = rects[0];
-    bool merge_successful = true;
-    for (size_type i = 1; i < rects.size() && merge_successful; ++i) {
+    for (size_type i = 1; i < rects.size(); ++i) {
         if (horizontal_merge_possible(ans, rects[i]))
             ans = merge_horizontally(ans, rects[i]);
         else if (vertical_merge_possible(ans, rects[i]))
             ans = merge_vertically(ans, rects[i]);
         else
-            merge_successful = false;
+            m_assert(false, "Merge failed, certain rectangles cannot be merged");
     }
-    m_assert(merge_successful, "Merge failed, certain rectangles cannot be merged");
     return ans;
 }

@@ -66,25 +66,22 @@ class Rectangle {
     Rectangle &operator+=(const Vector &v);
 };
 
-// TODO gut?
 using size_type = std::vector<Rectangle>::size_type;
 
 class Rectangles {
     std::vector<Rectangle> rectangles_;
 
   public:
-    Rectangles() : rectangles_() {}
-    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+    Rectangles();
+    Rectangles(std::initializer_list<Rectangle>);
 
     Rectangle &operator[](size_type n);
     const Rectangle &operator[](size_type n) const;
 
-    size_type size() const {return rectangles_.size();}
+    size_type size() const;
 
     bool operator==(const Rectangles&) const;
     Rectangles &operator+=(const Vector&);
-
-    friend Rectangles operator+(Rectangles&&, const Vector&);
 };
 
 Position operator+(const Position &, const Vector &);
