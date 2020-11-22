@@ -3,6 +3,8 @@
 
 #include <cassert>
 #include <cstdint>
+#include <vector>
+#include <initializer_list>
 
 using ScalarType = int_fast32_t;
 using Coordinate = ScalarType;
@@ -64,10 +66,41 @@ class Rectangle {
     Rectangle &operator+=(const Vector &v);
 };
 
+// TODO gut?
+using size_type = std::vector<Rectangle>::size_type;
+
+class Rectangles {
+    std::vector<Rectangle> rectangles_;
+
+  public:
+    Rectangles() : rectangles_() {}
+    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+
+    Rectangle &operator[](size_type n);
+    const Rectangle &operator[](size_type n) const;
+
+    size_type size() const {return rectangles_.size();}
+
+    bool operator==(const Rectangles&) const;
+    Rectangles &operator+=(const Vector&);
+
+    friend Rectangles operator+(Rectangles&&, const Vector&);
+};
+
 Position operator+(const Position &, const Vector &);
 Position operator+(const Vector &, const Position &);
 
 Rectangle operator+(const Rectangle &, const Vector &);
 Rectangle operator+(const Vector &, const Rectangle &);
+
+Rectangles operator+(const Rectangles&, const Vector&);
+Rectangles operator+(const Vector&, const Rectangles&);
+Rectangles operator+(Rectangles&&, const Vector&);
+Rectangles operator+(const Vector&, Rectangles&&);
+
+// TODO sps unnecessary to do rvalue reference stuff
+Rectangle merge_horizontally(const Rectangle&, const Rectangle&);
+Rectangle merge_vertically(const Rectangle&, const Rectangle&);
+Rectangle merge_all(const Rectangles&);
 
 #endif // GEOMETRY_GEOMETRY_H
