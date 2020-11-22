@@ -3,8 +3,8 @@
 
 #include <cassert>
 #include <cstdint>
-#include <vector>
 #include <initializer_list>
+#include <vector>
 
 using ScalarType = int_fast32_t;
 using Coordinate = ScalarType;
@@ -80,8 +80,8 @@ class Rectangles {
 
     size_type size() const;
 
-    bool operator==(const Rectangles&) const;
-    Rectangles &operator+=(const Vector&);
+    bool operator==(const Rectangles &) const;
+    Rectangles &operator+=(const Vector &);
 };
 
 Position operator+(const Position &, const Vector &);
@@ -90,14 +90,14 @@ Position operator+(const Vector &, const Position &);
 Rectangle operator+(const Rectangle &, const Vector &);
 Rectangle operator+(const Vector &, const Rectangle &);
 
-Rectangles operator+(const Rectangles&, const Vector&);
-Rectangles operator+(const Vector&, const Rectangles&);
-Rectangles operator+(Rectangles&&, const Vector&);
-Rectangles operator+(const Vector&, Rectangles&&);
+Rectangles operator+(const Rectangles &, const Vector &);
+Rectangles operator+(const Vector &, const Rectangles &);
+Rectangles operator+(Rectangles &&, const Vector &);
+Rectangles operator+(const Vector &, Rectangles &&);
 
 // TODO sps unnecessary to do rvalue reference stuff
-Rectangle merge_horizontally(const Rectangle&, const Rectangle&);
-Rectangle merge_vertically(const Rectangle&, const Rectangle&);
-Rectangle merge_all(const Rectangles&);
+Rectangle merge_horizontally(const Rectangle &, const Rectangle &);
+Rectangle merge_vertically(const Rectangle &, const Rectangle &);
+Rectangle merge_all(const Rectangles &);
 
 #endif // GEOMETRY_GEOMETRY_H

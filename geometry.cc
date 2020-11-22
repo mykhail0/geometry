@@ -12,7 +12,7 @@ namespace {
         return rect1.height() == rect2.height() &&
                rect1.pos() + Vector(rect1.width(), 0) == rect2.pos();
     }
-}
+} // namespace
 
 Vector::Vector(const Position &p) : XYObject{p.x(), p.y()} {
 }
@@ -131,9 +131,11 @@ Rectangle operator+(const Vector &v, const Rectangle &r) {
 }
 
 // RECTANGLES
-Rectangles::Rectangles() : rectangles_() {}
+Rectangles::Rectangles() : rectangles_() {
+}
 
-Rectangles::Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+Rectangles::Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {
+}
 
 Rectangle &Rectangles::operator[](size_type n) {
     m_assert(n < rectangles_.size(), "Trying to access an element out of bounds.");
