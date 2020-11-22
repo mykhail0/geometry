@@ -122,8 +122,8 @@ Rectangle operator+(const Vector &v, const Rectangle &r) {
 bool Rectangles::operator==(const Rectangles &rects) const {
     if (rects.size() != this->size())
         return false;
-    size_type i1 = i2 = 0;
-    for (; i1 < this->size() && (*this)[i1] == rects[i2]; ++i1, ++i2) {}
+    size_type i1, i2;
+    for (i1 = i2 = 0; i1 < this->size() && (*this)[i1] == rects[i2]; ++i1, ++i2) {}
     return i1 == this->size();
 }
 
@@ -134,10 +134,10 @@ Rectangles &Rectangles::operator+=(const Vector &v) {
 }
 
 Rectangles operator+(const Rectangles &rects, const Vector &v) {
-    std::vector<Rectangle> rec_v(rects.rectangles_);
-    for (Rectangle &r : rec_v)
-        rec_v += v;
-    return Rectangles(rec_v);
+    Rectangles ans = rects;
+    for (size_type i = 0; i < ans.size(); ++i)
+        ans[i] += v;
+    return ans;
 }
 
 Rectangles operator+(const Vector &v, const Rectangles &rects) {

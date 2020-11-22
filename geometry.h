@@ -73,11 +73,13 @@ class Rectangles {
     std::vector<Rectangle> rectangles_;
 
   public:
-    Rectangles() : rectangles_() {};
-    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {};
-    Rectangle &operator[](size_type n) {return rectangles_[n]};
-    const Rectangle &operator[](size_type n) const {return rectangles_[n]};
-    size_type size() const {return rectangles_.size();};
+    Rectangles() : rectangles_() {}
+    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+
+    Rectangle &operator[](size_type n) {return rectangles_[n];}
+    const Rectangle &operator[](size_type n) const {return rectangles_[n];}
+
+    size_type size() const {return rectangles_.size();}
 
     bool operator==(const Rectangles&) const;
     Rectangles &operator+=(const Vector&);
