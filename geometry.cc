@@ -17,50 +17,10 @@ namespace {
 Vector::Vector(const Position &p) : XYObject{p.x(), p.y()} {
 }
 
-XYObject::XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {
-}
-
-Coordinate XYObject::x() const {
-    return x_;
-}
-
-Coordinate XYObject::y() const {
-    return y_;
-}
-
-Vector::Vector(Coordinate x, Coordinate y) : XYObject{x, y} {
-}
-
-bool Vector::operator==(const Vector &other) const {
-    return x_ == other.x_ && y_ == other.y_;
-}
-
 Vector &Vector::operator+=(const Vector &other) {
     x_ += other.x_;
     y_ += other.y_;
     return *this;
-}
-
-Vector Vector::operator+(const Vector &other) const {
-    return Vector(x_ + other.x_, y_ + other.y_);
-}
-
-Vector Vector::reflection() const {
-    return Vector(y_, x_);
-}
-
-Position::Position(Coordinate x, Coordinate y) : XYObject{x, y} {
-}
-
-Position::Position(const Vector &v) : XYObject{v.x(), v.y()} {
-}
-
-bool Position::operator==(const Position &other) const {
-    return x_ == other.x_ && y_ == other.y_;
-}
-
-Position Position::reflection() const {
-    return Position(y_, x_);
 }
 
 const Position &Position::origin() {
@@ -74,11 +34,6 @@ Position &Position::operator+=(const Vector &v) {
     return *this;
 }
 
-Rectangle::Rectangle(ScalarType width, ScalarType height)
-    : width_(width), height_(height), left_bottom_corner(Position{0, 0}) {
-    m_assert(height_ > 0 && width_ > 0, "Both dimensions of a rectangle must be positive.");
-}
-
 Rectangle::Rectangle(ScalarType width, ScalarType height, const Position position)
     : width_(width), height_(height), left_bottom_corner(position) {
     m_assert(height_ > 0 && width_ > 0, "Both dimensions of a rectangle must be positive.");
@@ -87,26 +42,6 @@ Rectangle::Rectangle(ScalarType width, ScalarType height, const Position positio
 bool Rectangle::operator==(const Rectangle &other) const {
     return width_ == other.width_ && height_ == other.height_ &&
            left_bottom_corner == other.left_bottom_corner;
-}
-
-Rectangle Rectangle::reflection() const {
-    return Rectangle(height_, width_, left_bottom_corner.reflection());
-}
-
-ScalarType Rectangle::height() const {
-    return height_;
-}
-
-ScalarType Rectangle::width() const {
-    return width_;
-}
-
-uint64_t Rectangle::area() const {
-    return width_ * height_;
-}
-
-Position Rectangle::pos() const {
-    return left_bottom_corner;
 }
 
 Rectangle &Rectangle::operator+=(const Vector &v) {
@@ -130,20 +65,9 @@ Rectangle operator+(const Vector &v, const Rectangle &r) {
     return r + v;
 }
 
-// RECTANGLES
-Rectangles::Rectangles() : rectangles_() {
-}
-
-Rectangles::Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {
-}
-
 Rectangle &Rectangles::operator[](size_type n) {
     m_assert(n < rectangles_.size(), "Trying to access an element out of bounds.");
     return rectangles_[n];
-}
-
-size_type Rectangles::size() const {
-    return rectangles_.size();
 }
 
 const Rectangle &Rectangles::operator[](size_type n) const {
@@ -169,7 +93,7 @@ Rectangles &Rectangles::operator+=(const Vector &v) {
 
 Rectangles operator+(const Rectangles &rects, const Vector &v) {
     Rectangles ans = rects;
-    for (size_type i = 0; i < ans.size(); ++i)
+    for (Rectangles::size_type i = 0; i < ans.size(); ++i)
         ans[i] += v;
     return ans;
 }
@@ -199,7 +123,7 @@ Rectangle merge_vertically(const Rectangle &r1, const Rectangle &r2) {
 Rectangle merge_all(const Rectangles &rects) {
     m_assert(rects.size() > 0, "Merge failed, empty collection cannot be merged");
     Rectangle ans = rects[0];
-    for (size_type i = 1; i < rects.size(); ++i) {
+    for (Rectangles::size_type i = 1; i < rects.size(); ++i) {
         if (horizontal_merge_possible(ans, rects[i]))
             ans = merge_horizontally(ans, rects[i]);
         else if (vertical_merge_possible(ans, rects[i]))
