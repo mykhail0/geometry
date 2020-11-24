@@ -126,18 +126,13 @@ Rectangle merge_all(const Rectangles &rects) {
              "Merge failed, empty collection cannot be merged");
     Rectangle ans = rects[0];
     for (Rectangles::size_type i = 1; i < rects.size(); ++i) {
-        if (horizontal_merge_possible(ans, rects[i])) {
-            //Rectangle dummy(merge_horizontally(ans, rects[i]));
-            //ans = dummy;
+        if (horizontal_merge_possible(ans, rects[i]))
             ans = merge_horizontally(ans, rects[i]);
-        } else if (vertical_merge_possible(ans, rects[i])) {
-            //Rectangle dummy(merge_vertically(ans, rects[i]));
-            //ans = dummy;
+        else if (vertical_merge_possible(ans, rects[i]))
             ans = merge_vertically(ans, rects[i]);
-        }else {
+        else
             m_assert(false,
                      "Merge failed, certain rectangles cannot be merged");
-        }
     }
     return ans;
 }

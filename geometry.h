@@ -31,8 +31,7 @@ class Vector : public XYObject {
     Vector() = delete;
     Vector(const Vector &) = default;
     Vector &operator=(const Vector &) = default;
-    //Vector(Vector &&) = delete;
-    //Vector &operator=(Vector &&) = delete;
+    Vector(Vector &&) = delete;
     ~Vector() = default;
 
     Vector reflection() const {return Vector(y_, x_);}
@@ -58,8 +57,7 @@ class Position : public XYObject {
     Position() = delete;
     Position(const Position &) = default;
     Position &operator=(const Position &) = default;
-    //Position(Position &&) = delete;
-    //Position &operator=(Position &&) = delete;
+    Position(Position &&) = delete;
     ~Position() = default;
 
     Position reflection() const {return Position(y_, x_);}
@@ -86,8 +84,7 @@ class Rectangle {
     Rectangle() = delete;
     Rectangle(const Rectangle &) = default;
     Rectangle &operator=(const Rectangle &) = default;
-    //Rectangle(Rectangle &&) = delete;
-    //Rectangle &operator=(Rectangle &&) = delete;
+    Rectangle(Rectangle &&) = delete;
     ~Rectangle() = default;
 
     // TODO would move to .cc
