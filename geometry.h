@@ -12,7 +12,7 @@ class XYObject {
     using Coordinate = ScalarType;
 
     XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {}
-    virtual ~XYObject() {};
+    virtual ~XYObject() = 0;
 
     Coordinate x() const {return x_;}
     Coordinate y() const {return y_;}

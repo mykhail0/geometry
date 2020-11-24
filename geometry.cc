@@ -16,6 +16,8 @@ namespace {
     }
 } // namespace
 
+XYObject::~XYObject() {};
+
 Vector::Vector(const Position &p) : XYObject{p.x(), p.y()} {}
 
 Vector &Vector::operator+=(const Vector &other) {
