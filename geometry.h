@@ -11,15 +11,11 @@ class XYObject {
     using ScalarType = int_fast32_t;
     using Coordinate = ScalarType;
 
-    XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {
-    }
+    XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {}
+    virtual ~XYObject() {};
 
-    Coordinate x() const {
-        return x_;
-    }
-    Coordinate y() const {
-        return y_;
-    }
+    Coordinate x() const {return x_;}
+    Coordinate y() const {return y_;}
 
   protected:
     Coordinate x_, y_;
@@ -32,16 +28,23 @@ class Vector : public XYObject {
     Vector(Coordinate x, Coordinate y) : XYObject{x, y} {};
     explicit Vector(const Position &p);
 
-    Vector reflection() const {
-        return Vector(y_, x_);
-    }
+    Vector() = delete;
+    Vector(const Vector &) = default;
+    Vector &operator=(const Vector &) = default;
+    //Vector(Vector &&) = delete;
+    //Vector &operator=(Vector &&) = delete;
+    ~Vector() = default;
 
+    Vector reflection() const {return Vector(y_, x_);}
+
+    // TODO would move to .cc
     bool operator==(const Vector &other) const {
         return x_ == other.x_ && y_ == other.y_;
     };
 
     Vector &operator+=(const Vector &other);
 
+    // TODO would move to .cc
     Vector operator+(const Vector &other) const {
         return Vector(x_ + other.x_, y_ + other.y_);
     }
@@ -52,10 +55,16 @@ class Position : public XYObject {
     Position(Coordinate x, Coordinate y) : XYObject{x, y} {};
     explicit Position(const Vector &v) : XYObject{v.x(), v.y()} {};
 
-    Position reflection() const {
-        return Position(y_, x_);
-    }
+    Position() = delete;
+    Position(const Position &) = default;
+    Position &operator=(const Position &) = default;
+    //Position(Position &&) = delete;
+    //Position &operator=(Position &&) = delete;
+    ~Position() = default;
 
+    Position reflection() const {return Position(y_, x_);}
+
+    // TODO would move to .cc
     bool operator==(const Position &other) const {
         return x_ == other.x_ && y_ == other.y_;
     }
@@ -74,25 +83,25 @@ class Rectangle {
   public:
     Rectangle(ScalarType width, ScalarType height, Position position = {0, 0});
 
+    Rectangle() = delete;
+    Rectangle(const Rectangle &) = default;
+    Rectangle &operator=(const Rectangle &) = default;
+    //Rectangle(Rectangle &&) = delete;
+    //Rectangle &operator=(Rectangle &&) = delete;
+    ~Rectangle() = default;
+
+    // TODO would move to .cc
     Rectangle reflection() const {
         return Rectangle(height_, width_, left_bottom_corner.reflection());
     }
 
-    ScalarType height() const {
-        return height_;
-    }
+    ScalarType height() const {return height_;}
 
-    ScalarType width() const {
-        return width_;
-    }
+    ScalarType width() const {return width_;}
 
-    Position pos() const {
-        return left_bottom_corner;
-    }
+    Position pos() const {return left_bottom_corner;}
 
-    ScalarType area() const {
-        return width_ * height_;
-    }
+    ScalarType area() const {return width_ * height_;}
 
     bool operator==(const Rectangle &other) const;
     Rectangle &operator+=(const Vector &v);
@@ -104,17 +113,19 @@ class Rectangles {
   public:
     using size_type = std::vector<Rectangle>::size_type;
 
-    Rectangles() : rectangles_() {
-    }
-    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {
-    }
+    Rectangles() = default;
+    Rectangles(const Rectangles &) = default;
+    Rectangles &operator=(const Rectangles &) = default;
+    Rectangles(Rectangles &&) noexcept = default;
+    Rectangles &operator=(Rectangles &&) noexcept = default;
+    ~Rectangles() = default;
+
+    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
 
     Rectangle &operator[](size_type n);
     const Rectangle &operator[](size_type n) const;
 
-    size_type size() const {
-        return rectangles_.size();
-    }
+    size_type size() const {return rectangles_.size();}
 
     bool operator==(const Rectangles &) const;
     Rectangles &operator+=(const Vector &);
@@ -126,10 +137,8 @@ Position operator+(const Vector &, const Position &);
 Rectangle operator+(const Rectangle &, const Vector &);
 Rectangle operator+(const Vector &, const Rectangle &);
 
-Rectangles operator+(const Rectangles &, const Vector &);
-Rectangles operator+(const Vector &, const Rectangles &);
-Rectangles operator+(Rectangles &&, const Vector &);
-Rectangles operator+(const Vector &, Rectangles &&);
+Rectangles operator+(Rectangles, const Vector &);
+Rectangles operator+(const Vector &, Rectangles);
 
 Rectangle merge_horizontally(const Rectangle &, const Rectangle &);
 Rectangle merge_vertically(const Rectangle &, const Rectangle &);
