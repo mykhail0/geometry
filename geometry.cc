@@ -58,7 +58,6 @@ Position operator+(const Position &p, const Vector &v) {
     return Position(p.x() + v.x(), p.y() + v.y());
 }
 
-// TODO would move to .h
 Position operator+(const Vector &v, const Position &p) {
     return p + v;
 }
@@ -67,7 +66,6 @@ Rectangle operator+(const Rectangle &r, const Vector &v) {
     return Rectangle(r.width(), r.height(), r.pos() + v);
 }
 
-// TODO would move to .h
 Rectangle operator+(const Vector &v, const Rectangle &r) {
     return r + v;
 }
