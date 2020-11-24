@@ -6,79 +6,115 @@
 #include <initializer_list>
 #include <vector>
 
-using ScalarType = int_fast32_t;
-using Coordinate = ScalarType;
-
 class XYObject {
+  public:
+    using ScalarType = int_fast32_t;
+    using Coordinate = ScalarType;
+
+    XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {
+    }
+
+    Coordinate x() const {
+        return x_;
+    }
+    Coordinate y() const {
+        return y_;
+    }
+
   protected:
     Coordinate x_, y_;
-
-  public:
-    XYObject(Coordinate x, Coordinate y);
-
-    Coordinate x() const;
-    Coordinate y() const;
 };
 
 class Position;
 
 class Vector : public XYObject {
   public:
-    Vector(Coordinate x, Coordinate y);
+    Vector(Coordinate x, Coordinate y) : XYObject{x, y} {};
     explicit Vector(const Position &p);
 
-    Vector reflection() const;
+    Vector reflection() const {
+        return Vector(y_, x_);
+    }
 
-    bool operator==(const Vector &other) const;
+    bool operator==(const Vector &other) const {
+        return x_ == other.x_ && y_ == other.y_;
+    };
+
     Vector &operator+=(const Vector &other);
-    Vector operator+(const Vector &other) const;
+
+    Vector operator+(const Vector &other) const {
+        return Vector(x_ + other.x_, y_ + other.y_);
+    }
 };
 
 class Position : public XYObject {
   public:
-    Position(Coordinate x, Coordinate y);
-    explicit Position(const Vector &v);
+    Position(Coordinate x, Coordinate y) : XYObject{x, y} {};
+    explicit Position(const Vector &v) : XYObject{v.x(), v.y()} {};
 
-    Position reflection() const;
+    Position reflection() const {
+        return Position(y_, x_);
+    }
 
-    bool operator==(const Position &other) const;
+    bool operator==(const Position &other) const {
+        return x_ == other.x_ && y_ == other.y_;
+    }
+
     Position &operator+=(const Vector &v);
 
     static const Position &origin();
 };
 
 class Rectangle {
+    using ScalarType = XYObject::ScalarType;
+
     ScalarType width_, height_;
     Position left_bottom_corner;
 
   public:
-    Rectangle(ScalarType width, ScalarType height);
-    Rectangle(ScalarType width, ScalarType height, Position position);
+    Rectangle(ScalarType width, ScalarType height, Position position = {0, 0});
 
-    Rectangle reflection() const;
+    Rectangle reflection() const {
+        return Rectangle(height_, width_, left_bottom_corner.reflection());
+    }
 
-    ScalarType height() const;
-    ScalarType width() const;
-    Position pos() const;
-    uint64_t area() const; // TODO type alias?
+    ScalarType height() const {
+        return height_;
+    }
+
+    ScalarType width() const {
+        return width_;
+    }
+
+    Position pos() const {
+        return left_bottom_corner;
+    }
+
+    ScalarType area() const {
+        return width_ * height_;
+    }
 
     bool operator==(const Rectangle &other) const;
     Rectangle &operator+=(const Vector &v);
 };
 
-using size_type = std::vector<Rectangle>::size_type;
-
 class Rectangles {
     std::vector<Rectangle> rectangles_;
 
   public:
-    Rectangles();
-    Rectangles(std::initializer_list<Rectangle>);
+    using size_type = std::vector<Rectangle>::size_type;
+
+    Rectangles() : rectangles_() {
+    }
+    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {
+    }
 
     Rectangle &operator[](size_type n);
     const Rectangle &operator[](size_type n) const;
 
-    size_type size() const;
+    size_type size() const {
+        return rectangles_.size();
+    }
 
     bool operator==(const Rectangles &) const;
     Rectangles &operator+=(const Vector &);
@@ -95,7 +131,6 @@ Rectangles operator+(const Vector &, const Rectangles &);
 Rectangles operator+(Rectangles &&, const Vector &);
 Rectangles operator+(const Vector &, Rectangles &&);
 
-// TODO sps unnecessary to do rvalue reference stuff
 Rectangle merge_horizontally(const Rectangle &, const Rectangle &);
 Rectangle merge_vertically(const Rectangle &, const Rectangle &);
 Rectangle merge_all(const Rectangles &);
