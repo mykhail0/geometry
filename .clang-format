@@ -5,3 +5,6 @@ KeepEmptyLinesAtTheStartOfBlocks: false
 ColumnLimit: 98
 IndentCaseLabels: true
 NamespaceIndentation: All
+AllowShortBlocksOnASingleLine: Never
+SpaceBeforeCpp11BracedList: false
+Standard: c++17

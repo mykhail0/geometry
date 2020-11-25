@@ -11,14 +11,19 @@ class XYObject {
     using ScalarType = int_fast32_t;
     using Coordinate = ScalarType;
 
-    XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {}
+    XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {
+    }
     XYObject() = delete;
     XYObject(const XYObject &) = default;
     XYObject &operator=(const XYObject &) = default;
     virtual ~XYObject() = 0;
 
-    Coordinate x() const {return x_;}
-    Coordinate y() const {return y_;}
+    Coordinate x() const {
+        return x_;
+    }
+    Coordinate y() const {
+        return y_;
+    }
 
   protected:
     Coordinate x_, y_;
@@ -28,7 +33,8 @@ class Position;
 
 class Vector : public XYObject {
   public:
-    Vector(Coordinate x, Coordinate y) : XYObject{x, y} {};
+    Vector(Coordinate x, Coordinate y) : XYObject{x, y} {
+    };
     explicit Vector(const Position &p);
 
     Vector() = delete;
@@ -36,16 +42,16 @@ class Vector : public XYObject {
     Vector &operator=(const Vector &) = default;
     ~Vector() = default;
 
-    Vector reflection() const {return Vector(y_, x_);}
+    Vector reflection() const {
+        return Vector(y_, x_);
+    }
 
-    // TODO would move to .cc
     bool operator==(const Vector &other) const {
         return x_ == other.x_ && y_ == other.y_;
     };
 
     Vector &operator+=(const Vector &other);
 
-    // TODO would move to .cc
     Vector operator+(const Vector &other) const {
         return Vector(x_ + other.x_, y_ + other.y_);
     }
@@ -53,17 +59,20 @@ class Vector : public XYObject {
 
 class Position : public XYObject {
   public:
-    Position(Coordinate x, Coordinate y) : XYObject{x, y} {};
-    explicit Position(const Vector &v) : XYObject{v.x(), v.y()} {};
+    Position(Coordinate x, Coordinate y) : XYObject{x, y} {
+    };
+    explicit Position(const Vector &v) : XYObject{v.x(), v.y()} {
+    };
 
     Position() = delete;
     Position(const Position &) = default;
     Position &operator=(const Position &) = default;
     ~Position() = default;
 
-    Position reflection() const {return Position(y_, x_);}
+    Position reflection() const {
+        return Position(y_, x_);
+    }
 
-    // TODO would move to .cc
     bool operator==(const Position &other) const {
         return x_ == other.x_ && y_ == other.y_;
     }
@@ -87,18 +96,25 @@ class Rectangle {
     Rectangle &operator=(const Rectangle &) = default;
     ~Rectangle() = default;
 
-    // TODO would move to .cc
     Rectangle reflection() const {
         return Rectangle(height_, width_, left_bottom_corner.reflection());
     }
 
-    ScalarType height() const {return height_;}
+    ScalarType height() const {
+        return height_;
+    }
 
-    ScalarType width() const {return width_;}
+    ScalarType width() const {
+        return width_;
+    }
 
-    Position pos() const {return left_bottom_corner;}
+    Position pos() const {
+        return left_bottom_corner;
+    }
 
-    ScalarType area() const {return width_ * height_;}
+    ScalarType area() const {
+        return width_ * height_;
+    }
 
     bool operator==(const Rectangle &other) const;
     Rectangle &operator+=(const Vector &v);
@@ -117,12 +133,15 @@ class Rectangles {
     Rectangles &operator=(Rectangles &&) noexcept = default;
     ~Rectangles() = default;
 
-    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {}
+    Rectangles(std::initializer_list<Rectangle> il) : rectangles_(il) {
+    }
 
     Rectangle &operator[](size_type n);
     const Rectangle &operator[](size_type n) const;
 
-    size_type size() const {return rectangles_.size();}
+    size_type size() const {
+        return rectangles_.size();
+    }
 
     bool operator==(const Rectangles &) const;
     Rectangles &operator+=(const Vector &);
