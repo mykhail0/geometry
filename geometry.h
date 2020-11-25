@@ -12,6 +12,9 @@ class XYObject {
     using Coordinate = ScalarType;
 
     XYObject(Coordinate x, Coordinate y) : x_(x), y_(y) {}
+    XYObject() = delete;
+    XYObject(const XYObject &) = default;
+    XYObject &operator=(const XYObject &) = default;
     virtual ~XYObject() = 0;
 
     Coordinate x() const {return x_;}
